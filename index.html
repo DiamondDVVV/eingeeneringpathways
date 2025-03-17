@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Pathways</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-black min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-white">Engineering Pathways</h1>
+
+<div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto mb-8">
+            <h2 class="text-2xl font-bold mb-4">User Guide for High School Students</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-600">Why Take This Quiz?</h3>
+                    <p class="mt-2">This quiz is designed to help high school students discover which engineering discipline might be the best fit based on your interests, strengths, and preferences. Engineering offers diverse career paths, and finding the right specialization early can help you make informed decisions about your education.</p>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-600">How to Use This Quiz</h3>
+                    <ol class="list-decimal pl-5 mt-2 space-y-2">
+                        <li>Answer each question honestly based on your genuine interests and preferences.</li>
+                        <li>Don't overthink your answers - go with what resonates with you most.</li>
+                        <li>You can go back and change previous answers if needed.</li>
+                        <li>After completing all questions, you'll receive a recommended engineering discipline.</li>
+                        <li>You can retake the quiz as many times as you want.</li>
+                    </ol>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-600">Engineering Disciplines Overview</h3>
+                    <ul class="list-disc pl-5 mt-2 space-y-2">
+                        <li><strong>Mechanical Engineering:</strong> Focuses on designing, building, and testing mechanical systems and machines.</li>
+                        <li><strong>Computer Science Engineering:</strong> Involves software development, algorithms, and computing systems.</li>
+                        <li><strong>Civil Engineering:</strong> Concentrates on designing and constructing infrastructure like buildings, bridges, and roads.</li>
+                        <li><strong>Chemical Engineering:</strong> Applies chemistry, physics, and biology to design processes and products.</li>
+                        <li><strong>Electrical Engineering:</strong> Deals with electricity, electronics, and electromagnetic systems.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-blue-600">Next Steps After the Quiz</h3>
+                    <ul class="list-disc pl-5 mt-2 space-y-2">
+                        <li>Research universities that offer strong programs in your recommended discipline.</li>
+                        <li>Look for relevant high school courses that can prepare you (physics, calculus, computer science, etc.).</li>
+                        <li>Seek internships or shadowing opportunities in your area of interest.</li>
+                        <li>Join engineering clubs or competitions to gain practical experience.</li>
+                        <li>Connect with professionals in your chosen field through LinkedIn or career fairs.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p class="text-sm text-blue-800">Remember: This quiz provides guidance based on your current interests, but your preferences may evolve. Use this as a starting point for exploration rather than a definitive career decision.</p>
+            </div>
+        </div>
+
+
+
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+            <div id="quiz-container">
+                <div id="question-container" class="mb-6">
+                    <h2 id="question" class="text-xl font-semibold mb-4"></h2>
+                    <div id="options" class="space-y-3"></div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="bg-gray-500 text-white px-6 py-2 rounded-lg hidden">Previous</button>
+                    <button id="next-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg">Next</button>
+                </div>
+            </div>
+            <div id="result-container" class="hidden">
+                <h2 class="text-2xl font-bold mb-4">Your Recommended Engineering Stream:</h2>
+                <p id="result" class="text-lg mb-4"></p>
+                <button id="restart-btn" class="bg-green-600 text-white px-6 py-2 rounded-lg">Take Quiz Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What interests you the most?",
+                options: [
+                    "Building and designing machines",
+                    "Working with computers and software",
+                    "Constructing buildings and infrastructure",
+                    "Chemical processes and materials",
+                    "Electronics and electrical systems"
+                ]
+            },
+            {
+                question: "Which subject do you enjoy the most in school?",
+                options: [
+                    "Physics",
+                    "Computer Science",
+                    "Mathematics",
+                    "Chemistry",
+                    "Electronics"
+                ]
+            },
+            {
+                question: "What kind of projects excite you?",
+                options: [
+                    "Designing and building robots",
+                    "Creating apps and websites",
+                    "Designing bridges and structures",
+                    "Experimenting with materials",
+                    "Working with circuits and power systems"
+                ]
+            },
+            {
+                question: "What would you like to contribute to society?",
+                options: [
+                    "Innovative machines and products",
+                    "Digital solutions and automation",
+                    "Infrastructure development",
+                    "Sustainable materials and processes",
+                    "Energy solutions and electronics"
+                ]
+            },
+            {
+                question: "Which work environment appeals to you most?",
+                options: [
+                    "Manufacturing and production",
+                    "Tech company or startup",
+                    "Construction sites",
+                    "Research laboratories",
+                    "Power plants and industrial settings"
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result-container');
+        const resultEl = document.getElementById('result');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function showQuestion(questionIndex) {
+            const question = questions[questionIndex];
+            questionEl.textContent = question.question;
+            optionsEl.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = `w-full text-left p-3 rounded ${answers[questionIndex] === index ? 'bg-blue-100' : 'bg-gray-100'} hover:bg-blue-200`;
+                button.textContent = option;
+                button.onclick = () => selectOption(index);
+                optionsEl.appendChild(button);
+            });
+
+            prevBtn.classList.toggle('hidden', questionIndex === 0);
+            nextBtn.textContent = questionIndex === questions.length - 1 ? 'Show Result' : 'Next';
+        }
+
+        function selectOption(optionIndex) {
+            answers[currentQuestion] = optionIndex;
+            showQuestion(currentQuestion);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            } else {
+                showResult();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            answers = [];
+            quizContainer.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            showQuestion(0);
+        });
+
+        function showResult() {
+            const engineeringStreams = [
+                "Mechanical Engineering",
+                "Computer Science Engineering",
+                "Civil Engineering",
+                "Chemical Engineering",
+                "Electrical Engineering"
+            ];
+
+            // Count the frequency of each answer
+            const frequency = answers.reduce((acc, val) => {
+                acc[val] = (acc[val] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Find the most frequent answer
+            let maxFreq = 0;
+            let recommendedStreamIndex = 0;
+
+            for (let i = 0; i < 5; i++) {
+                if (frequency[i] > maxFreq) {
+                    maxFreq = frequency[i];
+                    recommendedStreamIndex = i;
+                }
+            }
+
+            quizContainer.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            resultEl.textContent = `Based on your responses, ${engineeringStreams[recommendedStreamIndex]} might be the best fit for you!`;
+        }
+
+        // Start the quiz
+        showQuestion(0);
+    </script>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-black min-h-screen" style="background-color: #000000;">
+    <div class="container mx-auto px-4 py-8">
+
+       <div class="grid grid-cols-2 gap-8 mt-10 mb-8">
+            <!-- Left Grid - Fields of Engineering -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="cursor-pointer" onclick="toggleDetails('fields')">
+                    <img src="Fields.jpeg" alt="Fields of Engineering" class="w-full h-64 object-cover">
+                    <h2 class="text-xl font-semibold p-4 text-navy-900">Fields of Engineering</h2>
+                </div>
+                <div id="fields-details" class="hidden p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Major Engineering Disciplines:</h3>
+                    <ul class="list-disc pl-5">
+                        <li>Mechanical Engineering</li>
+                        <li>Electrical Engineering</li>
+                        <li>Civil Engineering</li>
+                        <li>Chemical Engineering</li>
+                        <li>Computer Engineering</li>
+                        <li>Aerospace Engineering</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Grid - Engineering Career Guidance -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="cursor-pointer" onclick="toggleDetails('career')">
+                    <img src="Guidance.jpeg" alt="Engineering Career Guidance" class="w-full h-64 object-cover">
+                    <h2 class="text-xl font-semibold p-4 text-navy-900">Engineering Career Guidance</h2>
+                </div>
+                <div id="career-details" class="hidden p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Career Development Steps:</h3>
+                    <ul class="list-disc pl-5">
+                        <li>Education Requirements</li>
+                        <li>Professional Certifications</li>
+                        <li>Industry Experience</li>
+                        <li>Networking Opportunities</li>
+                        <li>Career Advancement Paths</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-8 mt-8">
+            <!-- Left Grid - Why Engineering -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="cursor-pointer" onclick="toggleDetails('why')">
+                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837" alt="Why Engineering" class="w-full h-64 object-cover">
+                    <h2 class="text-xl font-semibold p-4 text-navy-900">Why Engineering</h2>
+                </div>
+                <div id="why-details" class="hidden p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Reasons to Choose Engineering:</h3>
+                    <ul class="list-disc pl-5">
+                        <li>Innovation and Creativity</li>
+                        <li>Problem Solving</li>
+                        <li>High Career Growth</li>
+                        <li>Global Opportunities</li>
+                        <li>Competitive Salary</li>
+                        <li>Societal Impact</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Grid - How to Pursue Engineering -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="cursor-pointer" onclick="toggleDetails('pursue')">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="How to Pursue Engineering" class="w-full h-64 object-cover">
+                    <h2 class="text-xl font-semibold p-4 text-navy-900">How to Pursue Engineering</h2>
+                </div>
+                <div id="pursue-details" class="hidden p-4 bg-gray-50">
+                    <h3 class="font-bold mb-2">Steps to Become an Engineer:</h3>
+                    <ul class="list-disc pl-5">
+                        <li>Academic Prerequisites</li>
+                        <li>College Selection</li>
+                        <li>Entrance Exams</li>
+                        <li>Degree Programs</li>
+                        <li>Internships</li>
+                        <li>Professional Development</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleDetails(section) {
+                const details = document.getElementById(section + '-details');
+                if (details.classList.contains('hidden')) {
+                    details.classList.remove('hidden');
+                } else {
+                    details.classList.add('hidden');
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
